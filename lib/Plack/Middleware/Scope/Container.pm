@@ -1,14 +1,24 @@
 package Plack::Middleware::Scope::Container;
+
 use strict;
 use warnings;
+use parent qw(Plack::Middleware);
+use Scope::Container;
+
 our $VERSION = '0.01';
+
+sub call {
+    my ( $self, $env) = @_;
+    my $container = start_scope_container();
+    $self->app->($env);
+}
 
 1;
 __END__
 
 =head1 NAME
 
-Plack::Middleware::Scope::Container -
+Plack::Middleware::Scope::Container - Per Request container by Scope::Container
 
 =head1 SYNOPSIS
 
