@@ -18,21 +18,53 @@ __END__
 
 =head1 NAME
 
-Plack::Middleware::Scope::Container - Per Request container by Scope::Container
+Plack::Middleware::Scope::Container - per-request container 
 
 =head1 SYNOPSIS
 
-  use Plack::Middleware::Scope::Container;
+  use Plack::Builder;
+  
+  builder {
+      enable "Plack::Middleware::Scope::Container";
+      $app
+  };
+  
+  # in your application
+  package MyApp;
+
+  use Scope::Container;
+
+  sub getdb {
+      if ( my $dbh = scope_container('db') ) {
+          return $dbh;
+      } else {
+          my $dbh = DBI->connect(...);
+          scope_container('db', $dbh)
+          return $dbh;
+      }
+  }
+
+  sub app {
+    my $env = shift;
+    getdb(); # do connect
+    getdb(); # from container
+    getdb(); # from container
+    return [ '200', [] ["OK"]];
+    # disconnect from db at end of request
+  }
 
 =head1 DESCRIPTION
 
-Plack::Middleware::Scope::Container is
+Plack::Middleware::Scope::Container and L<Scope::Container> work like mod_perl's pnotes.
+It gives a per-request container to your application.
 
 =head1 AUTHOR
 
 Masahiro Nagano E<lt>kazeburo {at} gmail.comE<gt>
 
 =head1 SEE ALSO
+
+L<Scope::Container>, L<Plack::Middleware::Scope::Session>
 
 =head1 LICENSE
 
