@@ -5,12 +5,15 @@ use warnings;
 use parent qw(Plack::Middleware);
 use Scope::Container;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub call {
     my ( $self, $env) = @_;
     my $container = start_scope_container();
-    $self->app->($env);
+    my $res = $self->app->($env);
+    return $self->response_cb($res, sub {
+        undef $container;
+    });
 }
 
 1;
