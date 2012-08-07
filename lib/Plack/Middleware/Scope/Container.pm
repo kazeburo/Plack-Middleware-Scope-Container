@@ -4,14 +4,25 @@ use strict;
 use warnings;
 use parent qw(Plack::Middleware);
 use Scope::Container;
+use Plack::Util;
 
 our $VERSION = '0.02';
 
 sub call {
     my ( $self, $env) = @_;
     my $container = start_scope_container();
-    $env->{'scope.container'} = $container;
-    $self->app->($env);
+    my $res = $self->app->($env);
+    Plack::Util::response_cb($res, sub {
+        my $res = shift;
+        return sub {
+            my $chunk = shift;
+            if ( ! defined $chunk ) {
+                undef $container;
+                return;
+            }
+            return $chunk;
+        };
+    });
 }
 
 1;
