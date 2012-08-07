@@ -10,10 +10,8 @@ our $VERSION = '0.02';
 sub call {
     my ( $self, $env) = @_;
     my $container = start_scope_container();
-    my $res = $self->app->($env);
-    return $self->response_cb($res, sub {
-        undef $container;
-    });
+    $env->{'scope.container'} = $container;
+    $self->app->($env);
 }
 
 1;
