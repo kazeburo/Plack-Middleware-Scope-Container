@@ -1,5 +1,7 @@
 Revision history for Perl extension Plack::Middleware::Scope::Container
 
+{{$NEXT}}
+
 0.03    Tue Aug 7 17:00:14 2012
         - fixed for streaming response (Thank you motemen-san)
 

@@ -11,3 +11,10 @@ MANIFEST.bak
 *.sw[po]
 *~
 
+/Plack-Middleware-Scope-Container-*
+/.build
+/_build_params
+/Build
+!Build/
+!META.json
+!LICENSE
